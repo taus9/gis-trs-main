@@ -3,8 +3,14 @@ import { oakCors } from "@cors";
 
 import { supabase } from "./shared/supabase.ts";
 import { loadEnv } from "./shared/env.ts";
+
 import { SupabaseUserStore } from "./providers/user/supabase.ts";
 import { SupabaseTokenStore } from "./providers/token/supabase.ts";
+import { MemoryUserStore } from "./providers/user/memory.ts";
+import { MemoryTokenStore } from "./providers/token/memory.ts";
+import { FileUserStore } from "./providers/user/file.ts";
+import { FileTokenStore } from "./providers/token/file.ts";
+
 
 import { apiKeyCheckMiddleware } from "./middleware/api-key-check.ts";
 
@@ -17,9 +23,26 @@ import { createClientHandler } from "./routes/client.ts";
 // throws error if required variables are missing
 const env = loadEnv();
 
-const supabaseClient = supabase(env);
-const userStore = new SupabaseUserStore(supabaseClient);
-const tokenStore = new SupabaseTokenStore(supabaseClient);
+let userStore;
+let tokenStore;
+
+switch (env.PROVIDER) {
+    case "memory":
+        userStore = new MemoryUserStore();
+        tokenStore = new MemoryTokenStore();
+        break;
+    case "file":
+        userStore = new FileUserStore(".data", "users.json");
+        tokenStore = new FileTokenStore(".data", "tokens.json");
+        break;
+    case "supabase":
+    default: {
+        const supabaseClient = supabase(env);
+        userStore = new SupabaseUserStore(supabaseClient);
+        tokenStore = new SupabaseTokenStore(supabaseClient);
+        break;
+    }
+}
 
 const router = new Router();
 

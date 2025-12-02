@@ -1,5 +1,7 @@
 {
   "imports": {
+    "std/path/mod.ts": "https://deno.land/std@0.200.0/path/mod.ts",
+    "std/fs/ensure_dir.ts": "https://deno.land/std@0.200.0/fs/ensure_dir.ts",
     "@supabase": "jsr:@supabase/supabase-js@2",
     "@oak": "https://deno.land/x/oak@v12.6.1/mod.ts",
     "@cors": "https://deno.land/x/cors@v1.2.2/mod.ts",

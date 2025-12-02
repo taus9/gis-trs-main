@@ -4,6 +4,7 @@ export type EnvShape = {
 	SUPABASE_URL: string;
 	SUPABASE_KEY: string;
 	REFRESH_MARGIN: number;
+	PROVIDER: "memory" | "file" | "supabase" | string;
 	GOTO_CLIENT_ID: string;
 	GOTO_CLIENT_SECRET: string;
 	CLIENT_REDIRECT_URI: string;
@@ -11,6 +12,9 @@ export type EnvShape = {
 	GOTO_RESPONSE_TYPE?: string;
 	GOTO_AUTH_SCOPE?: string;
 };
+
+const allowedProviders = new Set(["memory", "file", "supabase"]);
+
 
 function required(key: string, value: string | undefined): string {
 	if (value === undefined || value === "") {
@@ -23,6 +27,14 @@ export function loadEnv(): EnvShape {
 	const PORT = Number(Deno.env.get("PORT") ?? "3000");
 
 	const REFRESH_MARGIN = Number(Deno.env.get("REFRESH_MARGIN") ?? "180");
+
+	const PROVIDER_RAW = required("PROVIDER", Deno.env.get("PROVIDER") ?? undefined).toLowerCase();
+	if (!allowedProviders.has(PROVIDER_RAW)) {
+		throw new Error(
+			`Invalid PROVIDER: ${PROVIDER_RAW}. Allowed values are: memory, file, supabase`
+		);
+	}
+	const PROVIDER = PROVIDER_RAW as "memory" | "file" | "supabase";
 
 	const SUPABASE_URL = required("SUPABASE_URL", Deno.env.get("SUPABASE_URL") ?? undefined);
 	const SUPABASE_KEY = required("SUPABASE_KEY", Deno.env.get("SUPABASE_KEY") ?? undefined);
@@ -40,6 +52,7 @@ export function loadEnv(): EnvShape {
 		SUPABASE_URL,
 		SUPABASE_KEY,
 		REFRESH_MARGIN,
+		PROVIDER,
 		GOTO_CLIENT_ID,
 		GOTO_CLIENT_SECRET,
 		CLIENT_REDIRECT_URI,
