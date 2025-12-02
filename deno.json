@@ -1,5 +1,6 @@
 {
   "tasks": {
-    "dev": "deno run --import-map=import_map.json --env --allow-net --allow-env --allow-read --allow-write --watch src/main.ts"
+    "dev": "deno run --import-map=import_map.json --env --allow-net --allow-env --allow-read --allow-write --watch src/main.ts",
+    "api:register": "deno run --allow-net --allow-env scripts/register_call.ts"
   }
 }

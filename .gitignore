@@ -5,5 +5,5 @@ test_db/
 
 
 .env
-
+.data
 todo.md
