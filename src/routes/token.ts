@@ -1,7 +1,7 @@
 import { Context } from "@oak";
 import { TokenStore, StoredToken } from "../interfaces/token.ts";
 import { getTokenFromRefresh } from "../shared/goto.ts";
-import { ConfigShape } from "../shared/env.ts";
+import { ConfigShape } from "../shared/config.ts";
 
 export function createTokenHandler(tokenStore: TokenStore, config: ConfigShape) {
     return async (ctx: Context) => {

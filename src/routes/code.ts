@@ -2,7 +2,7 @@ import { Context } from "@oak";
 import {StoredToken, TokenStore} from "../interfaces/token.ts";
 import { tokenRequestSchema } from "../shared/schemas.ts";
 import { getTokenFromCode } from "../shared/goto.ts";
-import { ConfigShape } from "../shared/env.ts";
+import { ConfigShape } from "../shared/config.ts";
 
 export function createCodeHandler(_store: TokenStore, config: ConfigShape) {
     return async (ctx: Context) => {

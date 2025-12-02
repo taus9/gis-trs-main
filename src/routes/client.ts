@@ -1,5 +1,5 @@
 import { Context } from "@oak";
-import { ConfigShape } from "../shared/env.ts";
+import { ConfigShape } from "../shared/config.ts";
 
 export function createClientHandler(config: ConfigShape) {
 

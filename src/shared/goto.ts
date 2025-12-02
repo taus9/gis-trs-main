@@ -1,5 +1,5 @@
 import { Token, TokenError } from "../interfaces/token.ts";
-import { ConfigShape } from "./env.ts";
+import { ConfigShape } from "./config.ts";
 
 export async function getTokenFromCode(code: string, config: ConfigShape) {
     const client_id = config.GOTO_CLIENT_ID;

@@ -2,7 +2,7 @@ import { Application, Router } from "@oak";
 import { oakCors } from "@cors";
 
 import { supabase } from "./shared/supabase.ts";
-import { loadConfig } from "./shared/env.ts";
+import { loadConfig } from "./shared/config.ts";
 
 import { SupabaseUserStore } from "./providers/user/supabase.ts";
 import { SupabaseTokenStore } from "./providers/token/supabase.ts";
@@ -24,12 +24,12 @@ import { TokenStore } from "./interfaces/token.ts";
 
 // Load environment variables
 // throws error if required variables are missing
-const env = loadConfig();
+const config = loadConfig();
 
 let userStore: UserStore;
 let tokenStore: TokenStore;
 
-switch (env.PROVIDER) {
+switch (config.PROVIDER) {
     case "memory":
         userStore = new MemoryUserStore();
         tokenStore = new MemoryTokenStore();
@@ -40,7 +40,7 @@ switch (env.PROVIDER) {
         break;
     case "supabase":
     default: {
-        const supabaseClient = supabase(env);
+        const supabaseClient = supabase(config);
         userStore = new SupabaseUserStore(supabaseClient);
         tokenStore = new SupabaseTokenStore(supabaseClient);
         break;
@@ -50,9 +50,9 @@ switch (env.PROVIDER) {
 const router = new Router();
 
 router.post("/register", createRegisterHandler(userStore));
-router.post("/code", createCodeHandler(tokenStore, env));
-router.get("/token", createTokenHandler(tokenStore, env));
-router.get("/client", createClientHandler(env));
+router.post("/code", createCodeHandler(tokenStore, config));
+router.get("/token", createTokenHandler(tokenStore, config));
+router.get("/client", createClientHandler(config));
 
 const app = new Application();
 app.use(oakCors({
@@ -66,4 +66,4 @@ app.use(apiKeyCheckMiddleware(userStore));
 app.use(router.routes());
 app.use(router.allowedMethods());
 
-await app.listen({ port: env.PORT });
+await app.listen({ port: config.PORT });
