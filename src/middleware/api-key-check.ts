@@ -1,5 +1,5 @@
 // src/middleware/api-key-check.ts
-import { Context } from "https://deno.land/x/oak@v12.6.1/mod.ts";
+import { Context } from "@oak";
 import { UserStore } from "../interfaces/user.ts";
 
 /**

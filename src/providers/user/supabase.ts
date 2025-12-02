@@ -1,4 +1,4 @@
-import type { SupabaseClient } from 'jsr:@supabase/supabase-js@2';
+import type { SupabaseClient } from '@supabase';
 import type { User, UserStore } from '../../interfaces/user.ts';
 
 export class SupabaseUserStore implements UserStore {

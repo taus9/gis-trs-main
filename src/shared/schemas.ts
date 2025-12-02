@@ -1,4 +1,4 @@
-import { z } from "https://deno.land/x/zod@v3.22.2/mod.ts";
+import { z } from "@zod";
 
 // Used for validating incoming store request in the createStoreHandler
 export const storeSchema = z.object({

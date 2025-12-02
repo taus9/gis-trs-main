@@ -1,4 +1,4 @@
-import type { SupabaseClient } from 'jsr:@supabase/supabase-js@2';
+import type { SupabaseClient } from '@supabase';
 import type { StoredToken, TokenStore } from "../../interfaces/token.ts";
 
 export class SupabaseTokenStore implements TokenStore {

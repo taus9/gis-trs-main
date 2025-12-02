@@ -1,4 +1,4 @@
-import { Context } from "https://deno.land/x/oak@v12.6.1/mod.ts";
+import { Context } from "@oak";
 import { TokenStore, StoredToken } from "../interfaces/token.ts";
 import { getTokenFromRefresh } from "../shared/goto.ts";
 import { EnvShape } from "../shared/env.ts";
