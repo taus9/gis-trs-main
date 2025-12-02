@@ -1,0 +1,144 @@
+openapi: 3.1.0
+info:
+  title: NTS GIS Token Refresh Server
+  description: API for managing OAuth token exchange and refresh logic with user registration.
+  version: 1.1.0
+servers:
+  - url: 'http://localhost:3000'
+
+paths:
+  /register:
+    post:
+      summary: Register a new user
+      description: Generates a new user ID and API key.
+      responses:
+        "201":
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegisterResponse'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /code:
+    post:
+      parameters:
+        - name: gis-user-id
+          in: header
+          required: true
+          schema:
+            type: string
+        - name: gis-api-key
+          in: header
+          required: true
+          schema:
+            type: string
+      summary: Store token from OAuth code
+      description: Exchanges an authorization code for a token and stores it.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CodeRequest'
+      responses:
+        "200":
+          description: Token stored successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CodeResponse'
+        "400":
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /token:
+    get:
+      parameters:
+        - name: gis-user-id
+          in: header
+          required: true
+          schema:
+            type: string
+        - name: gis-api-key
+          in: header
+          required: true
+          schema:
+            type: string
+      summary: Get or refresh token by user ID
+      description: Retrieves the stored token for the specified user, refreshing it if expired.
+      responses:
+        "200":
+          description: Token retrieved or refreshed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenResponse'
+        "404":
+          description: User token not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  schemas:
+
+    TokenResponse:
+      type: object
+      properties:
+        access_token:
+          type: string
+
+    CodeRequest:
+      type: object
+      required:
+        - code
+        - redirect_uri
+      properties:
+        code:
+          type: string
+        redirect_uri:
+          type: string
+
+    CodeResponse:
+      type: object
+      properties:
+        message:
+          type: string
+
+    RegisterResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        api_key:
+          type: string
+        created_at:
+          type: integer
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
