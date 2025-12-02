@@ -19,12 +19,15 @@ import { createCodeHandler } from "./routes/code.ts";
 import { createRegisterHandler } from "./routes/register.ts";
 import { createClientHandler } from "./routes/client.ts";
 
+import { UserStore } from "./interfaces/user.ts";
+import { TokenStore } from "./interfaces/token.ts";
+
 // Load environment variables
 // throws error if required variables are missing
 const env = loadEnv();
 
-let userStore;
-let tokenStore;
+let userStore: UserStore;
+let tokenStore: TokenStore;
 
 switch (env.PROVIDER) {
     case "memory":
