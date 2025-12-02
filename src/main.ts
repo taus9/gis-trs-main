@@ -2,7 +2,7 @@ import { Application, Router } from "@oak";
 import { oakCors } from "@cors";
 
 import { supabase } from "./shared/supabase.ts";
-import { loadEnv } from "./shared/env.ts";
+import { loadConfig } from "./shared/env.ts";
 
 import { SupabaseUserStore } from "./providers/user/supabase.ts";
 import { SupabaseTokenStore } from "./providers/token/supabase.ts";
@@ -24,7 +24,7 @@ import { TokenStore } from "./interfaces/token.ts";
 
 // Load environment variables
 // throws error if required variables are missing
-const env = loadEnv();
+const env = loadConfig();
 
 let userStore: UserStore;
 let tokenStore: TokenStore;

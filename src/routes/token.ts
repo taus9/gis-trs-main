@@ -1,9 +1,9 @@
 import { Context } from "@oak";
 import { TokenStore, StoredToken } from "../interfaces/token.ts";
 import { getTokenFromRefresh } from "../shared/goto.ts";
-import { EnvShape } from "../shared/env.ts";
+import { ConfigShape } from "../shared/env.ts";
 
-export function createTokenHandler(tokenStore: TokenStore, env: EnvShape) {
+export function createTokenHandler(tokenStore: TokenStore, config: ConfigShape) {
     return async (ctx: Context) => {
         const user_id = ctx.state.user_id as string;
 
@@ -24,10 +24,10 @@ export function createTokenHandler(tokenStore: TokenStore, env: EnvShape) {
                 return;
             }
 
-            const response = await getTokenFromRefresh(userToken.refresh_token, env);
+            const response = await getTokenFromRefresh(userToken.refresh_token, config);
 
             if ("access_token" in response) {
-                const expires_at = Date.now() + (response.expires_in - env.REFRESH_MARGIN) * 1000;
+                const expires_at = Date.now() + (response.expires_in - config.REFRESH_MARGIN) * 1000;
                 const newUserToken: StoredToken = {
                     ...response,
                     user_id,

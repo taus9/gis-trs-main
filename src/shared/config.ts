@@ -1,5 +1,5 @@
 // Environment loader factory
-export type EnvShape = {
+export type ConfigShape = {
 	PORT: number;
 	SUPABASE_URL: string;
 	SUPABASE_KEY: string;
@@ -15,7 +15,6 @@ export type EnvShape = {
 
 const allowedProviders = new Set(["memory", "file", "supabase"]);
 
-
 function required(key: string, value: string | undefined): string {
 	if (value === undefined || value === "") {
 		throw new Error(`Missing required environment variable: ${key}`);
@@ -23,7 +22,7 @@ function required(key: string, value: string | undefined): string {
 	return value;
 }
 
-export function loadEnv(): EnvShape {
+export function loadConfig(): ConfigShape {
 	const PORT = Number(Deno.env.get("PORT") ?? "3000");
 
 	const REFRESH_MARGIN = Number(Deno.env.get("REFRESH_MARGIN") ?? "180");

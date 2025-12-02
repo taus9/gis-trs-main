@@ -1,5 +1,5 @@
 import { createClient } from "@supabase";
 
-import { EnvShape } from "./env.ts";
+import { ConfigShape } from "./env.ts";
 
-export const supabase = (env:EnvShape) => createClient(env.SUPABASE_URL, env.SUPABASE_KEY);
+export const supabase = (config:ConfigShape) => createClient(config.SUPABASE_URL, config.SUPABASE_KEY);

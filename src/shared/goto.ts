@@ -1,11 +1,11 @@
 import { Token, TokenError } from "../interfaces/token.ts";
-import { EnvShape } from "./env.ts";
+import { ConfigShape } from "./env.ts";
 
-export async function getTokenFromCode(code: string, env: EnvShape) {
-    const client_id = env.GOTO_CLIENT_ID;
-    const client_secret = env.GOTO_CLIENT_SECRET;
-    const redirect_uri = env.CLIENT_REDIRECT_URI;
-    const token_endpoint = env.GOTO_TOKEN_ENDPOINT;
+export async function getTokenFromCode(code: string, config: ConfigShape) {
+    const client_id = config.GOTO_CLIENT_ID;
+    const client_secret = config.GOTO_CLIENT_SECRET;
+    const redirect_uri = config.CLIENT_REDIRECT_URI;
+    const token_endpoint = config.GOTO_TOKEN_ENDPOINT;
     const auth_token = btoa(`${client_id}:${client_secret}`);
 
     const headers = new Headers({
@@ -49,10 +49,10 @@ export async function getTokenFromCode(code: string, env: EnvShape) {
     }
 }
 
-export async function getTokenFromRefresh(refresh_token: string, env: EnvShape) {
-    const client_id = env.GOTO_CLIENT_ID;
-    const client_secret = env.GOTO_CLIENT_SECRET;
-    const token_endpoint = env.GOTO_TOKEN_ENDPOINT;
+export async function getTokenFromRefresh(refresh_token: string, config: ConfigShape) {
+    const client_id = config.GOTO_CLIENT_ID;
+    const client_secret = config.GOTO_CLIENT_SECRET;
+    const token_endpoint = config.GOTO_TOKEN_ENDPOINT;
     const auth_token = btoa(`${client_id}:${client_secret}`);
 
     const headers = new Headers({

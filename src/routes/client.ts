@@ -1,12 +1,12 @@
 import { Context } from "@oak";
-import { EnvShape } from "../shared/env.ts";
+import { ConfigShape } from "../shared/env.ts";
 
-export function createClientHandler(env: EnvShape) {
+export function createClientHandler(config: ConfigShape) {
 
-    const client_id = env.GOTO_CLIENT_ID;
-    const redirect_uri = env.CLIENT_REDIRECT_URI;
-    const response_type = env.GOTO_RESPONSE_TYPE ?? "";
-    const scope = env.GOTO_AUTH_SCOPE ?? "";
+    const client_id = config.GOTO_CLIENT_ID;
+    const redirect_uri = config.CLIENT_REDIRECT_URI;
+    const response_type = config.GOTO_RESPONSE_TYPE ?? "";
+    const scope = config.GOTO_AUTH_SCOPE ?? "";
 
     return (ctx: Context) => {
         const user_id = ctx.state.user_id as string;
