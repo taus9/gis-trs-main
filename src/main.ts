@@ -12,7 +12,7 @@ import { FileUserStore } from "./providers/user/file.ts";
 import { FileTokenStore } from "./providers/token/file.ts";
 
 
-import { apiKeyCheckMiddleware } from "./middleware/api-key-check.ts";
+import { createKeyCheckMiddleware } from "./middleware/api-key-check.ts";
 
 import { createTokenHandler } from "./routes/token.ts";
 import { createCodeHandler } from "./routes/code.ts";
@@ -61,7 +61,7 @@ app.use(oakCors({
     allowedHeaders: ["Content-Type"],
 }));
 
-app.use(apiKeyCheckMiddleware(userStore));
+app.use(createKeyCheckMiddleware(userStore));
 
 app.use(router.routes());
 app.use(router.allowedMethods());

@@ -8,7 +8,7 @@ import { UserStore } from "../interfaces/user.ts";
  * @param skipPaths - Array of URL paths to bypass the auth check
  * @returns Middleware function that enforces API key checks on incoming requests
  */
-export function apiKeyCheckMiddleware(
+export function createKeyCheckMiddleware(
     userStore: UserStore,
     skipPaths: string[] = ["/register"],
 ) {
