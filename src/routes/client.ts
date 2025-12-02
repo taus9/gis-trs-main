@@ -1,11 +1,12 @@
 import { Context } from "https://deno.land/x/oak@v12.6.1/mod.ts";
+import { EnvShape } from "../shared/env.ts";
 
-export function createClientHandler() {
+export function createClientHandler(env: EnvShape) {
 
-    const client_id = Deno.env.get("GOTO_CLIENT_ID") as string;
-    const redirect_uri = Deno.env.get("CLIENT_REDIRECT_URI") as string;
-    const response_type = Deno.env.get("GOTO_RESPONSE_TYPE") as string;
-    const scope = Deno.env.get("GOTO_AUTH_SCOPE") as string;
+    const client_id = env.GOTO_CLIENT_ID;
+    const redirect_uri = env.CLIENT_REDIRECT_URI;
+    const response_type = env.GOTO_RESPONSE_TYPE ?? "";
+    const scope = env.GOTO_AUTH_SCOPE ?? "";
 
     return (ctx: Context) => {
         const user_id = ctx.state.user_id as string;

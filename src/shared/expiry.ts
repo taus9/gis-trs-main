@@ -1,7 +1,5 @@
-export default function getRefreshMargin() {
-    let refresh = Number(Deno.env.get("REFRESH_MARGIN"));
-    if (Number.isNaN(refresh)) {
-        refresh = 180;
-    }
-    return refresh;
-}
+// import { env } from "./env.ts";
+
+// export default function getRefreshMargin() {
+//     return env.REFRESH_MARGIN;
+// }

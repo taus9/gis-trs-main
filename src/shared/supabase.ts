@@ -1,9 +1,5 @@
-import { createClient } from 'jsr:@supabase/supabase-js@2';
+import { createClient } from "jsr:@supabase/supabase-js@2";
 
-const SUPABASE_URL = Deno.env.get("SUPABASE_URL") as string;
-const SUPABASE_KEY = Deno.env.get("SUPABASE_KEY") as string;
+import { EnvShape } from "./env.ts";
 
-export const supabase = createClient(
-    SUPABASE_URL,
-    SUPABASE_KEY,
-);
+export const supabase = (env:EnvShape) => createClient(env.SUPABASE_URL, env.SUPABASE_KEY);

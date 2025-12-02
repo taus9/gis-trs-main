@@ -1,10 +1,11 @@
 import { Token, TokenError } from "../interfaces/token.ts";
+import { EnvShape } from "./env.ts";
 
-export async function getTokenFromCode(code: string) {
-    const client_id = Deno.env.get("GOTO_CLIENT_ID") ?? "";
-    const client_secret = Deno.env.get("GOTO_CLIENT_SECRET") ?? "";
-    const redirect_uri = Deno.env.get("CLIENT_REDIRECT_URI") ?? "";
-    const token_endpoint = Deno.env.get("GOTO_TOKEN_ENDPOINT") ?? "";
+export async function getTokenFromCode(code: string, env: EnvShape) {
+    const client_id = env.GOTO_CLIENT_ID;
+    const client_secret = env.GOTO_CLIENT_SECRET;
+    const redirect_uri = env.CLIENT_REDIRECT_URI;
+    const token_endpoint = env.GOTO_TOKEN_ENDPOINT;
     const auth_token = btoa(`${client_id}:${client_secret}`);
 
     const headers = new Headers({
@@ -48,10 +49,10 @@ export async function getTokenFromCode(code: string) {
     }
 }
 
-export async function getTokenFromRefresh(refresh_token: string) {
-    const client_id = Deno.env.get("GOTO_CLIENT_ID") ?? "";
-    const client_secret = Deno.env.get("GOTO_CLIENT_SECRET") ?? "";
-    const token_endpoint = Deno.env.get("GOTO_TOKEN_ENDPOINT") ?? "";
+export async function getTokenFromRefresh(refresh_token: string, env: EnvShape) {
+    const client_id = env.GOTO_CLIENT_ID;
+    const client_secret = env.GOTO_CLIENT_SECRET;
+    const token_endpoint = env.GOTO_TOKEN_ENDPOINT;
     const auth_token = btoa(`${client_id}:${client_secret}`);
 
     const headers = new Headers({
