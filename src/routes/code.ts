@@ -5,7 +5,7 @@ import { tokenRequestSchema } from "../shared/schemas.ts";
 import { getTokenFromCode } from "../shared/goto.ts";
 import { ConfigShape } from "../shared/config.ts";
 
-export function createCodeHandler(_store: TokenStore, config: ConfigShape) {
+export function createCodeHandler(tokenStore: TokenStore, config: ConfigShape) {
     return async (ctx: Context) => {
         // the user_id was set in createKeyCheckMiddleware
         const user_id = ctx.state.user_id as string;
@@ -15,7 +15,7 @@ export function createCodeHandler(_store: TokenStore, config: ConfigShape) {
         if ("access_token" in response) {
             const expires_at = Date.now() + (response.expires_in - config.REFRESH_MARGIN) * 1000;
             const store: StoredToken = {...response, expires_at, user_id};
-            await _store.upsert(store);
+            await tokenStore.upsert(store);
             console.log("New token from code successful: user_id:", user_id);
             ctx.response.status = 200;
             ctx.response.body = { message: "Token stored" };
