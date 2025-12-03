@@ -14,6 +14,7 @@ import { createTokenHandler } from "./routes/token.ts";
 import { createCodeHandler } from "./routes/code.ts";
 import { createRegisterHandler } from "./routes/register.ts";
 import { createClientHandler } from "./routes/client.ts";
+import { tokenRequestSchema } from "./shared/schemas.ts";
 
 /**
  * createApp builds and returns a configured Oak Application instance WITHOUT starting the server.
@@ -29,7 +30,6 @@ export function createApp(config: ConfigShape, userStore: UserStore, tokenStore:
 
   const app = new Application();
 
-  // Basic structured error handler - normalize errors to JSON responses
   app.use(errorHandler);
 
   app.use(oakCors({
@@ -43,7 +43,7 @@ export function createApp(config: ConfigShape, userStore: UserStore, tokenStore:
 
   router.post("/register", createRegisterHandler(userStore));
   router.post("/code", createCodeHandler(tokenStore, config));
-  router.get("/token", createTokenHandler(tokenStore, config));
+  router.get("/token", validateBody(tokenRequestSchema), createTokenHandler(tokenStore, config));
   router.get("/client", createClientHandler(config));
 
   // Wrap apiKeyCheckMiddleware so we can bypass it for public endpoints
