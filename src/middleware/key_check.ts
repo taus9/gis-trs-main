@@ -1,6 +1,7 @@
 // src/middleware/api-key-check.ts
 import { Context } from "@oak";
 import { UserStore } from "../interfaces/user.ts";
+import { AppError } from "../shared/errors.ts";
 
 /**
  * Factory to create API key authentication middleware for Oak.
@@ -16,32 +17,19 @@ export function createKeyCheckMiddleware(userStore: UserStore)
 
         // Reject requests missing either header
         if (!suppliedKey || !suppliedId) {
-            console.error("Unauthorized request: missing headers");
-            ctx.response.status = 401;
-            ctx.response.body = { error: "Unauthorized" };
-            return;
+            //TODO: Implement a custom error class for this middleware
+            // provide more details like which header is missing
+            throw new AppError("Unauthorized request", 401);
         }
 
-        try {
-            // Lookup the user record by user ID
-            const user = await userStore.get(suppliedId);
+        // Lookup the user record by user ID
+        const user = await userStore.get(suppliedId);
 
-            // Reject if user not found or API key mismatch
-            if (!user || user.api_key !== suppliedKey) {
-                console.error("Unauthorized request: invalid credentials", {
-                    user_id: suppliedId,
-                    api_key: suppliedKey,
-                });
-                ctx.response.status = 401;
-                ctx.response.body = { error: "Unauthorized" };
-                return;
-            }
-        } catch (err) {
-            // Handle unexpected errors from the store
-            console.error("API key check error:", err);
-            ctx.response.status = 500;
-            ctx.response.body = { error: "Internal server error" };
-            return;
+        // Reject if user not found or API key mismatch
+        if (!user || user.api_key !== suppliedKey) {
+            //TODO: Implement a custom error class for this middleware
+            // provide more details like whether user not found or key mismatch
+            throw new AppError("Unauthorized", 401);
         }
 
         ctx.state.user_id = suppliedId;
