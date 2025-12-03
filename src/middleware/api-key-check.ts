@@ -5,21 +5,11 @@ import { UserStore } from "../interfaces/user.ts";
 /**
  * Factory to create API key authentication middleware for Oak.
  * @param userStore - Provides access to stored user records for validation
- * @param skipPaths - Array of URL paths to bypass the auth check
  * @returns Middleware function that enforces API key checks on incoming requests
- */
-export function createKeyCheckMiddleware(
-    userStore: UserStore,
-    skipPaths: string[] = ["/register"],
-) {
+*/
+export function createKeyCheckMiddleware(userStore: UserStore) 
+{
     return async (ctx: Context, next: () => Promise<unknown>) => {
-        const path = ctx.request.url.pathname;
-
-        // Skip auth on configured paths
-        if (skipPaths.includes(path)) {
-            return await next();
-        }
-
         // Extract the API key and user ID from request headers
         const suppliedKey = ctx.request.headers.get("gis-api-key");
         const suppliedId = ctx.request.headers.get("gis-user-id");
