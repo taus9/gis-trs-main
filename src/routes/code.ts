@@ -1,4 +1,5 @@
 import { Context } from "@oak";
+import { z } from "@zod";
 import {StoredToken, TokenStore} from "../interfaces/token.ts";
 import { tokenRequestSchema } from "../shared/schemas.ts";
 import { getTokenFromCode } from "../shared/goto.ts";
@@ -8,20 +9,8 @@ export function createCodeHandler(_store: TokenStore, config: ConfigShape) {
     return async (ctx: Context) => {
 
         try {
-            const user_id = ctx.state.user_id as string; // There will always be a valid user id here
-            const { value } = ctx.request.body({ type: "json" });
-            const { code } = await value;
-
-            const validationResult = tokenRequestSchema.safeParse({ code });
-
-            if (!validationResult.success) {
-                console.error("Invalid request:", validationResult.error.flatten().fieldErrors);
-                ctx.response.status = 400;
-                ctx.response.body = { error: "Invalid request" };
-                return;
-            }
-
-            const response = await getTokenFromCode(code, config);
+            const payload = ctx.state.validatedBody as z.infer<typeof tokenRequestSchema>;
+            const response = await getTokenFromCode(payload.code, config);
 
             if ("access_token" in response) {
                 const expires_at = Date.now() + (response.expires_in - config.REFRESH_MARGIN) * 1000;
