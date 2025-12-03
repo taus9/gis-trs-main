@@ -1,6 +1,3 @@
-import { Application, Router } from "@oak";
-import { oakCors } from "@cors";
-
 import { supabase } from "./shared/supabase.ts";
 import { loadConfig } from "./shared/config.ts";
 
@@ -11,16 +8,9 @@ import { MemoryTokenStore } from "./providers/token/memory.ts";
 import { FileUserStore } from "./providers/user/file.ts";
 import { FileTokenStore } from "./providers/token/file.ts";
 
-
-import { createKeyCheckMiddleware } from "./middleware/api-key-check.ts";
-
-import { createTokenHandler } from "./routes/token.ts";
-import { createCodeHandler } from "./routes/code.ts";
-import { createRegisterHandler } from "./routes/register.ts";
-import { createClientHandler } from "./routes/client.ts";
-
 import { UserStore } from "./interfaces/user.ts";
 import { TokenStore } from "./interfaces/token.ts";
+import { createApp } from "./app.ts";
 
 // Load environment variables
 // throws error if required variables are missing
@@ -47,23 +37,7 @@ switch (config.PROVIDER) {
     }
 }
 
-const router = new Router();
-
-router.post("/register", createRegisterHandler(userStore));
-router.post("/code", createCodeHandler(tokenStore, config));
-router.get("/token", createTokenHandler(tokenStore, config));
-router.get("/client", createClientHandler(config));
-
-const app = new Application();
-app.use(oakCors({
-    origin: "chrome-extension://hfeoapcldkocaoikhnhjfhffmlaeccoe",
-    methods: ["GET", "POST", "OPTIONS"], // include OPTIONS!
-    allowedHeaders: ["Content-Type"],
-}));
-
-app.use(createKeyCheckMiddleware(userStore));
-
-app.use(router.routes());
-app.use(router.allowedMethods());
+const app = createApp(config, userStore, tokenStore);
+console.log(`Starting server on :${config.PORT} (provider=${config.PROVIDER})`);
 
 await app.listen({ port: config.PORT });
