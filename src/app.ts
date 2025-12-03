@@ -7,14 +7,13 @@ import { TokenStore } from "./interfaces/token.ts";
 import { ConfigShape } from "./shared/config.ts";
 
 import { createKeyCheckMiddleware } from "./middleware/key_check.ts";
+import { errorHandler } from "./middleware/error_handler.ts";
+import { validateBody } from "./middleware/validate_body.ts";
 
 import { createTokenHandler } from "./routes/token.ts";
 import { createCodeHandler } from "./routes/code.ts";
 import { createRegisterHandler } from "./routes/register.ts";
 import { createClientHandler } from "./routes/client.ts";
-import { createTestHandler } from "./routes/validate_test_1.ts";
-import { validateTestSchema } from "./shared/test_schemas.ts";
-import { validateBody } from "./middleware/validate_body.ts";
 
 /**
  * createApp builds and returns a configured Oak Application instance WITHOUT starting the server.
@@ -31,39 +30,24 @@ export function createApp(config: ConfigShape, userStore: UserStore, tokenStore:
   const app = new Application();
 
   // Basic structured error handler - normalize errors to JSON responses
-  app.use(async (ctx, next) => {
-    try {
-      await next();
-      // Optionally, handle 404s if no route matched
-      if (ctx.response.status === 404 && !ctx.response.body) {
-        ctx.response.status = 404;
-        ctx.response.body = { error: "Not Found" };
-      }
-    } catch (err) {
-      // Log server-side (replace with structured logger as you add one)
-      console.error("Unhandled error:", err);
-      ctx.response.status = 500;
-      ctx.response.body = { error: "Internal Server Error" };
-    }
-  });
+  app.use(errorHandler);
 
-    app.use(oakCors({
-        origin: "chrome-extension://hfeoapcldkocaoikhnhjfhffmlaeccoe",
-        methods: ["GET", "POST", "OPTIONS"], // include OPTIONS!
-        allowedHeaders: ["Content-Type"],
-    }));
+  app.use(oakCors({
+    origin: "chrome-extension://hfeoapcldkocaoikhnhjfhffmlaeccoe",
+    methods: ["GET", "POST", "OPTIONS"], // include OPTIONS!
+    allowedHeaders: ["Content-Type"],
+  }));
 
   // Router and routes
   const router = new Router();
 
-  //router.post("/register", createRegisterHandler(userStore));
-  //router.post("/code", createCodeHandler(tokenStore, config));
-  //router.get("/token", createTokenHandler(tokenStore, config));
-  //router.get("/client", createClientHandler(config));
-  router.post("/test", validateBody(validateTestSchema), createTestHandler());
+  router.post("/register", createRegisterHandler(userStore));
+  router.post("/code", createCodeHandler(tokenStore, config));
+  router.get("/token", createTokenHandler(tokenStore, config));
+  router.get("/client", createClientHandler(config));
 
   // Wrap apiKeyCheckMiddleware so we can bypass it for public endpoints
-  const bypassPaths = ["/register", "/client", "/test"];
+  const bypassPaths = ["/register", "/client"];
   const apiKeyMiddleware = createKeyCheckMiddleware(userStore);
 
   app.use(async (ctx, next) => {
