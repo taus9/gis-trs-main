@@ -42,8 +42,8 @@ export function createApp(config: ConfigShape, userStore: UserStore, tokenStore:
   const router = new Router();
 
   router.post("/register", createRegisterHandler(userStore));
-  router.post("/code", createCodeHandler(tokenStore, config));
-  router.get("/token", validateBody(tokenRequestSchema), createTokenHandler(tokenStore, config));
+  router.post("/code", validateBody(tokenRequestSchema), createCodeHandler(tokenStore, config));
+  router.get("/token",  createTokenHandler(tokenStore, config));
   router.get("/client", createClientHandler(config));
 
   // Wrap apiKeyCheckMiddleware so we can bypass it for public endpoints
