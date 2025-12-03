@@ -4,6 +4,7 @@ import {StoredToken, TokenStore} from "../interfaces/token.ts";
 import { tokenRequestSchema } from "../shared/schemas.ts";
 import { getTokenFromCode } from "../shared/goto.ts";
 import { ConfigShape } from "../shared/config.ts";
+import { AppError } from "../shared/errors.ts";
 
 export function createCodeHandler(tokenStore: TokenStore, config: ConfigShape) {
     return async (ctx: Context) => {
@@ -20,9 +21,8 @@ export function createCodeHandler(tokenStore: TokenStore, config: ConfigShape) {
             ctx.response.status = 200;
             ctx.response.body = { message: "Token stored" };
         } else {
-            console.error("Error getting token from code:", response.error_description);
-            ctx.response.status = response.status;
-            ctx.response.body = { error: response.error_description };
+            //console.error("Error getting token from code:", response.error_description);
+            throw new AppError(response.error_description || "Error getting token from code", response.status);
         }
     }
 }

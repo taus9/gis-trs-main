@@ -39,9 +39,8 @@ export function createTokenHandler(tokenStore: TokenStore, config: ConfigShape) 
             ctx.response.status = 200;
             ctx.response.body = { access_token: newUserToken.access_token };
         } else {
-            console.error("Error getting token from code:", response.error_description);
-            ctx.response.status = response.status;
-            ctx.response.body = { error: response.error_description };
+            //console.error("Error getting token from code:", response.error_description);
+            throw new AppError(response.error_description || "Error refreshing token", response.status);
         }
     };
 }
